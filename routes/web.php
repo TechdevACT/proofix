@@ -14,6 +14,15 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Temporary route to clear cache on server
+Route::get('/clear-cache', function () {
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
+    return "All cache cleared successfully! You can now access your website.";
+});
+
 // ─── Dashboard (Handled by RecordingController) ───────────────────────────
 Route::get('/dashboard', [RecordingController::class, 'dashboard'])
     ->middleware('auth')
