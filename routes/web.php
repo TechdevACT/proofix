@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecordingController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\VideoUploadController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
 
     // ─── Operator ─────────────────────────────────────────────────────
 
+    Route::post('/upload-video-chunk', [VideoUploadController::class, 'uploadChunk'])->name('video.upload.chunk');
     Route::post('/recordings', [RecordingController::class, 'store'])->name('recordings.store');
     Route::get('/recordings/check/{order_number}', [RecordingController::class, 'check'])->name('recordings.check');
 

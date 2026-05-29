@@ -3,6 +3,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import axios from 'axios'
+import fixWebmDuration from 'fix-webm-duration'
 
 const props = defineProps({ operator: Object })
 const emit = defineEmits(['close'])
@@ -83,8 +84,13 @@ onUnmounted(() => {
 // ─── Kamera ───────────────────────────────────────────────────────────────
 async function initCamera() {
     try {
+        const quality = usePage().props.app_settings?.video_quality || '720p'
+        let idealW = 1280, idealH = 720
+        if (quality === '480p') { idealW = 854; idealH = 480 }
+        if (quality === '360p') { idealW = 640; idealH = 360 }
+
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+            video: { width: { ideal: idealW }, height: { ideal: idealH } },
             audio: false,
         })
         videoEl.value.srcObject = stream
@@ -92,9 +98,9 @@ async function initCamera() {
 
         // Canvas stream untuk watermark — MediaRecorder merekam dari sini
         const canvas = canvasEl.value
-        canvas.width  = 1280
-        canvas.height = 720
-        canvasStream = canvas.captureStream(30)
+        canvas.width  = idealW
+        canvas.height = idealH
+        canvasStream = canvas.captureStream(24) // 24 FPS (Standar film) agar gerakan mulus tapi hemat data 20% dibanding 30fps
 
         cameraOk.value = true
         startCanvasLoop()
@@ -250,8 +256,15 @@ function handleStop() {
 // ─── Recording ───────────────────────────────────────────────────────────
 function startRecording(order) {
     chunks = []
+    
+    const quality = usePage().props.app_settings?.video_quality || '720p'
+    let bps = 1200000 // 720p = ~9 MB/min (Jernih tapi size sedang)
+    if (quality === '480p') bps = 600000 // 480p = ~4.5 MB/min (Lebih kecil)
+    if (quality === '360p') bps = 300000 // 360p = ~2.2 MB/min (Sangat hemat)
+
     mediaRecorder = new MediaRecorder(canvasStream, {
         mimeType: 'video/webm;codecs=vp9',
+        videoBitsPerSecond: bps,
     })
     mediaRecorder.ondataavailable = e => {
         if (e.data.size > 0) chunks.push(e.data)
@@ -270,7 +283,17 @@ async function uploadVideo(order, videoChunks, duration) {
     uploadStatus.value = 'uploading'
 
     try {
-        const blob = new Blob(videoChunks, { type: 'video/webm' })
+        let blob = new Blob(videoChunks, { type: 'video/webm' })
+
+        // Perbaiki WebM Duration secara native menggunakan fix-webm-duration
+        // Tanpa loading FFmpeg yang berat/rentan gagal
+        blob = await new Promise((resolve) => {
+            // duration dalam millisecond
+            fixWebmDuration(blob, duration * 1000, (fixedBlob) => {
+                resolve(fixedBlob);
+            });
+        });
+
         const form = new FormData()
         form.append('video',        blob, `${order}.webm`)
         form.append('order_number', order)

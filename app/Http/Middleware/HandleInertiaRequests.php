@@ -43,6 +43,14 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => session('message'),
             ],
+            'app_settings' => \Illuminate\Support\Facades\Storage::exists('settings.json')
+                ? json_decode(\Illuminate\Support\Facades\Storage::get('settings.json'), true)
+                : [
+                    'stop_keyword'    => 'STOP',
+                    'video_quality'   => '720p',
+                    'retention_days'  => 90,
+                    'watermark_pos'   => 'bottom',
+                ],
         ];
     }
 }
