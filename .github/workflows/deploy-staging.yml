@@ -3,7 +3,7 @@ name: Deploy to Staging Proofix
 on:
   push:
     branches:
-      - main  # ganti jika branch kamu bukan "main"
+      - main # ganti jika branch kamu bukan "main"
 
 jobs:
   deploy:
@@ -15,7 +15,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.2"
 
       - name: Install Composer Dependencies
         run: composer install --optimize-autoloader --no-dev --no-interaction
@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install NPM & Build Assets
         run: |
@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /staging-proofix.kerjakreatif.com/
+          server-dir: ./
           exclude: |
             **/.git*
             **/.git*/**
