@@ -94,13 +94,23 @@ async function initCamera() {
             audio: false,
         })
         videoEl.value.srcObject = stream
+        
+        // Wait for video metadata to get actual video resolution for canvas
+        await new Promise(resolve => {
+            videoEl.value.onloadedmetadata = () => {
+                canvasEl.value.width = idealW
+                canvasEl.value.height = idealH
+                resolve()
+            }
+        })
+        
         await videoEl.value.play()
 
         // Canvas stream untuk watermark — MediaRecorder merekam dari sini
         const canvas = canvasEl.value
-        canvas.width  = idealW
-        canvas.height = idealH
-        canvasStream = canvas.captureStream(24) // 24 FPS (Standar film) agar gerakan mulus tapi hemat data 20% dibanding 30fps
+        // Gunakan 30 FPS penuh untuk pergerakan sangat mulus (tanpa kompresi FPS)
+        const fps = 30
+        canvasStream = canvas.captureStream(fps)
 
         cameraOk.value = true
         startCanvasLoop()
@@ -257,15 +267,10 @@ function handleStop() {
 function startRecording(order) {
     chunks = []
     
-    const quality = usePage().props.app_settings?.video_quality || '720p'
-    let bps = 1200000 // 720p = ~9 MB/min (Jernih tapi size sedang)
-    if (quality === '480p') bps = 600000 // 480p = ~4.5 MB/min (Lebih kecil)
-    if (quality === '360p') bps = 300000 // 360p = ~2.2 MB/min (Sangat hemat)
+    // Biarkan browser menggunakan bitrate maksimal bawaannya (Uncompressed / High Quality)
+    let options = { mimeType: 'video/webm;codecs=vp9' }
 
-    mediaRecorder = new MediaRecorder(canvasStream, {
-        mimeType: 'video/webm;codecs=vp9',
-        videoBitsPerSecond: bps,
-    })
+    mediaRecorder = new MediaRecorder(canvasStream, options)
     mediaRecorder.ondataavailable = e => {
         if (e.data.size > 0) chunks.push(e.data)
     }

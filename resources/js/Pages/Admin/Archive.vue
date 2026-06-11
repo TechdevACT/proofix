@@ -79,9 +79,9 @@ function fmtDuration(sec) {
 }
 
 const statusBadge = {
-    uploaded: 'bg-green-900/50 text-green-400 border-green-800',
-    failed:   'bg-red-900/50 text-red-400 border-red-800',
-    pending:  'bg-yellow-900/50 text-yellow-400 border-yellow-800',
+    uploaded: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-400 dark:border-green-800',
+    failed:   'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/50 dark:text-red-400 dark:border-red-800',
+    pending:  'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-400 dark:border-yellow-800',
 }
 
 const hasActiveFilter = () =>
@@ -98,17 +98,17 @@ function isExpired(dt) {
 
 <template>
     <!-- Search & Filter ──────────────────────────────────────────────────── -->
-    <div class="bg-gray-900 rounded-xl border border-gray-800 p-4 mb-5">
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 mb-5">
       <!-- Search bar utama -->
       <div class="relative mb-3">
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg">🔍</span>
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-500 text-lg">🔍</span>
         <input
           id="search-resi"
           v-model="form.q"
           type="text"
           placeholder="Cari nomor resi…"
-          class="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5
-                 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500
+          class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg pl-10 pr-4 py-2.5
+                 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500
                  text-sm transition-colors"
         />
       </div>
@@ -117,16 +117,16 @@ function isExpired(dt) {
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <!-- Operator -->
         <select v-model="form.operator" @change="applyFilter"
-                class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm
-                       text-gray-300 focus:outline-none focus:border-blue-500">
+                class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm
+                       text-gray-800 dark:text-gray-300 focus:outline-none focus:border-blue-500">
           <option value="">Semua Operator</option>
           <option v-for="op in operators" :key="op.id" :value="op.id">{{ op.name }}</option>
         </select>
 
         <!-- Status -->
         <select v-model="form.status" @change="applyFilter"
-                class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm
-                       text-gray-300 focus:outline-none focus:border-blue-500">
+                class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm
+                       text-gray-800 dark:text-gray-300 focus:outline-none focus:border-blue-500">
           <option value="">Semua Status</option>
           <option value="uploaded">Uploaded</option>
           <option value="pending">Pending</option>
@@ -135,36 +135,36 @@ function isExpired(dt) {
 
         <!-- Date from -->
         <input v-model="form.date_from" @change="applyFilter" type="date"
-               class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm
-                      text-gray-300 focus:outline-none focus:border-blue-500" />
+               class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm
+                      text-gray-800 dark:text-gray-300 focus:outline-none focus:border-blue-500" />
 
         <!-- Date to -->
         <input v-model="form.date_to" @change="applyFilter" type="date"
-               class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm
-                      text-gray-300 focus:outline-none focus:border-blue-500" />
+               class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm
+                      text-gray-800 dark:text-gray-300 focus:outline-none focus:border-blue-500" />
       </div>
 
       <!-- Clear filter -->
       <div v-if="hasActiveFilter()" class="mt-3 flex justify-end">
         <button @click="clearFilter"
-                class="text-xs text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1">
+                class="text-xs text-gray-500 dark:text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1">
           ✕ Hapus semua filter
         </button>
       </div>
     </div>
 
     <!-- Jumlah hasil -->
-    <p class="text-gray-600 text-xs mb-3">
-      Menampilkan <span class="text-gray-400 font-medium">{{ recordings.total }}</span> rekaman
+    <p class="text-gray-500 dark:text-gray-600 text-xs mb-3">
+      Menampilkan <span class="text-gray-600 dark:text-gray-400 font-medium">{{ recordings.total }}</span> rekaman
     </p>
 
     <!-- Tabel ────────────────────────────────────────────────────────────── -->
-    <div class="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="text-left text-gray-600 text-xs uppercase tracking-wider
-                       border-b border-gray-800 bg-gray-900/80">
+            <tr class="text-left text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider
+                       border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80">
               <th class="px-5 py-3 font-medium">Nomor Resi</th>
               <th class="px-5 py-3 font-medium">Operator</th>
               <th class="px-5 py-3 font-medium">Stasiun</th>
@@ -174,11 +174,11 @@ function isExpired(dt) {
               <th class="px-5 py-3 font-medium text-right">Aksi</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-800/40">
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-800/40">
             <tr v-for="rec in recordings.data" :key="rec.id"
                 :class="[
                   'transition-colors group',
-                  isExpired(rec.recorded_at) ? 'bg-red-900/20 hover:bg-red-900/30' : 'hover:bg-gray-800/30'
+                  isExpired(rec.recorded_at) ? 'bg-red-900/20 hover:bg-red-900/30' : 'hover:bg-gray-50 dark:bg-gray-800/30'
                 ]">
               <td class="px-5 py-3 font-mono font-semibold">
                 <div class="flex items-center gap-2">
@@ -192,10 +192,10 @@ function isExpired(dt) {
                   </span>
                 </div>
               </td>
-              <td class="px-5 py-3 text-gray-300">{{ rec.user?.name ?? '—' }}</td>
-              <td class="px-5 py-3 text-gray-500 text-xs">{{ rec.station ?? '—' }}</td>
-              <td class="px-5 py-3 text-gray-400 text-xs">{{ fmtDate(rec.recorded_at) }}</td>
-              <td class="px-5 py-3 text-gray-400 text-xs">{{ fmtDuration(rec.duration_seconds) }}</td>
+              <td class="px-5 py-3 text-gray-800 dark:text-gray-300">{{ rec.user?.name ?? '—' }}</td>
+              <td class="px-5 py-3 text-gray-500 dark:text-gray-500 text-xs">{{ rec.station ?? '—' }}</td>
+              <td class="px-5 py-3 text-gray-600 dark:text-gray-400 text-xs">{{ fmtDate(rec.recorded_at) }}</td>
+              <td class="px-5 py-3 text-gray-600 dark:text-gray-400 text-xs">{{ fmtDuration(rec.duration_seconds) }}</td>
               <td class="px-5 py-3">
                 <span :class="['text-xs px-2 py-0.5 rounded-full border',
                                statusBadge[rec.upload_status] ?? statusBadge.pending]">
@@ -230,7 +230,7 @@ function isExpired(dt) {
               </td>
             </tr>
             <tr v-if="!recordings.data.length">
-              <td colspan="7" class="px-5 py-12 text-center text-gray-600">
+              <td colspan="7" class="px-5 py-12 text-center text-gray-500 dark:text-gray-600">
                 <p class="text-3xl mb-2">📭</p>
                 <p>Tidak ada rekaman ditemukan</p>
                 <button v-if="hasActiveFilter()" @click="clearFilter"
@@ -245,27 +245,27 @@ function isExpired(dt) {
 
       <!-- Pagination ─────────────────────────────────────────────────────── -->
       <div v-if="recordings.last_page > 1"
-           class="px-5 py-3 border-t border-gray-800 flex items-center justify-between">
-        <p class="text-xs text-gray-600">
+           class="px-5 py-3 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
+        <p class="text-xs text-gray-500 dark:text-gray-600">
           Halaman {{ recordings.current_page }} dari {{ recordings.last_page }}
         </p>
         <div class="flex items-center gap-1">
           <Link v-if="recordings.prev_page_url"
                 :href="recordings.prev_page_url"
-                class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded text-gray-300 transition-colors">
+                class="px-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-800 dark:text-gray-300 transition-colors">
             ← Sebelumnya
           </Link>
           <Link v-for="link in recordings.links.slice(1, -1)" :key="link.label"
                 :href="link.url ?? '#'"
                 :class="['px-3 py-1.5 text-xs rounded transition-colors',
                          link.active
-                           ? 'bg-blue-600 text-white'
-                           : 'bg-gray-800 hover:bg-gray-700 text-gray-400']">
+                           ? 'bg-blue-600 text-gray-900 dark:text-white'
+                           : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400']">
             {{ link.label }}
           </Link>
           <Link v-if="recordings.next_page_url"
                 :href="recordings.next_page_url"
-                class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded text-gray-300 transition-colors">
+                class="px-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-800 dark:text-gray-300 transition-colors">
             Selanjutnya →
           </Link>
         </div>

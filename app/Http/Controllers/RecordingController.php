@@ -20,21 +20,40 @@ class RecordingController extends Controller
             'duration'     => 'nullable|integer',
         ]);
 
-        $path = $request->file('video')
-            ->storeAs(
-                'videos/' . now()->format('Y-m-d'),
-                $request->order_number . '.webm'
-            );
+        $dateFolder = now()->format('Y-m-d');
+        $fileName   = $request->order_number . '.webm';
+        $nasPath    = "videos/{$dateFolder}/{$fileName}";
 
-        Recording::create([
+        // Simpan sementara di local agar response cepat
+        $tempPath = $request->file('video')->storeAs(
+            'temp_videos',
+            $fileName,
+            'local'
+        );
+
+        $recording = Recording::create([
             'order_number'     => $request->order_number,
             'user_id'          => auth()->id(),
             'station'          => auth()->user()->station,
-            'video_path'       => $path,
+            'video_path'       => $nasPath,
             'duration_seconds' => $request->duration,
-            'upload_status'    => 'uploaded',
+            'upload_status'    => 'pending',
             'recorded_at'      => $request->recorded_at,
         ]);
+
+        // Kirim file ke NAS di background setelah response dikirim ke user
+        dispatch(function () use ($tempPath, $nasPath, $recording) {
+            try {
+                $fileContents = Storage::disk('local')->get($tempPath);
+                Storage::disk('nas')->put($nasPath, $fileContents);
+                Storage::disk('local')->delete($tempPath);
+                
+                $recording->update(['upload_status' => 'uploaded']);
+            } catch (\Exception $e) {
+                \Log::error('Gagal upload ke NAS: ' . $e->getMessage());
+                $recording->update(['upload_status' => 'failed']);
+            }
+        })->afterResponse();
 
         return response()->json(['status' => 'ok']);
     }
@@ -167,11 +186,12 @@ class RecordingController extends Controller
     {
         $recording = Recording::with('user')->findOrFail($id);
 
-        // Cek apakah file video benar-benar ada
-        $videoExists = $recording->video_path && Storage::exists($recording->video_path);
-        $fileSize    = $videoExists ? Storage::size($recording->video_path) : null;
+        // Cek apakah file video benar-benar ada di NAS
+        $videoExists = $recording->video_path && Storage::disk('nas')->exists($recording->video_path);
+        $fileSize    = $videoExists ? Storage::disk('nas')->size($recording->video_path) : null;
+        $videoUrl    = $videoExists ? Storage::disk('nas')->url($recording->video_path) : null;
 
-        return inertia('Admin/Show', compact('recording', 'videoExists', 'fileSize'));
+        return inertia('Admin/Show', compact('recording', 'videoExists', 'fileSize', 'videoUrl'));
     }
 
     // ─── Admin: Stream Video ──────────────────────────────────────────────
@@ -179,15 +199,11 @@ class RecordingController extends Controller
     public function stream($id)
     {
         $recording = Recording::findOrFail($id);
-        abort_if(! auth()->user()->isAdmin(), 403);
 
-        $path = storage_path('app/' . $recording->video_path);
-        abort_unless(file_exists($path), 404, 'File video tidak ditemukan.');
+        abort_unless(Storage::disk('nas')->exists($recording->video_path), 404, 'File video tidak ditemukan.');
 
-        return response()->file($path, [
-            'Content-Type'  => 'video/webm',
-            'Cache-Control' => 'no-cache',
-        ]);
+        // Stream langsung melalui Laravel agar tidak terkena blokir CORS/PNA dari browser
+        return Storage::disk('nas')->response($recording->video_path);
     }
 
     // ─── Admin: Download Video ────────────────────────────────────────────
@@ -196,9 +212,9 @@ class RecordingController extends Controller
     {
         $recording = Recording::findOrFail($id);
         abort_if(! auth()->user()->isAdmin(), 403);
-        abort_unless(Storage::exists($recording->video_path), 404, 'File video tidak ditemukan.');
+        abort_unless(Storage::disk('nas')->exists($recording->video_path), 404, 'File video tidak ditemukan.');
 
-        return Storage::download(
+        return Storage::disk('nas')->download(
             $recording->video_path,
             $recording->order_number . '.webm'
         );
@@ -211,8 +227,8 @@ class RecordingController extends Controller
         $recording = Recording::findOrFail($id);
         abort_if(! auth()->user()->isAdmin(), 403);
 
-        if ($recording->video_path && Storage::exists($recording->video_path)) {
-            Storage::delete($recording->video_path);
+        if ($recording->video_path && Storage::disk('nas')->exists($recording->video_path)) {
+            Storage::disk('nas')->delete($recording->video_path);
         }
         $recording->delete();
 
