@@ -30,6 +30,9 @@ jobs:
           npm install
           npm run build
 
+      - name: Unignore Build Folder for FTP
+        run: sed -i '/^\/public\/build/d' .gitignore || true
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
