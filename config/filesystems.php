@@ -56,6 +56,28 @@ return [
             'throw' => false,
         ],
 
+        'nas' => [
+            'driver' => 'sftp',
+            'host' => env('NAS_HOST'),
+            'username' => env('NAS_USERNAME'),
+            'password' => env('NAS_PASSWORD'),
+            'port' => (int) env('NAS_PORT', 22),
+            'root' => env('NAS_ROOT', '/'),
+            'url' => env('NAS_URL'), // Untuk Web Station (Misal: https://kantorku.synology.me)
+            'visibility' => 'public',
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0600,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0700,
+                ],
+            ],
+            'throw' => true, // SET TO TRUE FOR DEBUGGING
+        ],
+
     ],
 
     /*

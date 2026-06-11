@@ -65,9 +65,9 @@ function doDelete() {
 }
 
 const statusBadge = {
-    uploaded: 'bg-green-900/50 text-green-400 border-green-800',
-    failed:   'bg-red-900/50 text-red-400 border-red-800',
-    pending:  'bg-yellow-900/50 text-yellow-400 border-yellow-800',
+    uploaded: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-400 dark:border-green-800',
+    failed:   'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/50 dark:text-red-400 dark:border-red-800',
+    pending:  'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-400 dark:border-yellow-800',
 }
 
 const streamUrl = route('admin.recordings.stream', props.recording.id)
@@ -77,20 +77,20 @@ const downloadUrl = route('admin.recordings.download', props.recording.id)
 <template>
     <div class="max-w-5xl mx-auto mb-4 flex items-center gap-3">
       <Link :href="route('admin.archive')"
-            class="text-gray-500 hover:text-gray-300 transition-colors text-sm">
+            class="text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:text-gray-300 transition-colors text-sm">
         ← Kembali ke Arsip
       </Link>
-      <span class="text-gray-700">/</span>
-      <span class="text-gray-200 font-bold font-mono text-sm">{{ recording.order_number }}</span>
+      <span class="text-gray-400 dark:text-gray-700">/</span>
+      <span class="text-gray-900 dark:text-gray-200 font-bold font-mono text-sm">{{ recording.order_number }}</span>
     </div>
 
     <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-5">
 
       <!-- Video Player ──────────────────────────────────────────────────── -->
       <div class="lg:col-span-2">
-        <div class="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-          <div class="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
-            <h2 class="text-gray-400 text-sm font-semibold">▶ Video Rekaman</h2>
+        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+            <h2 class="text-gray-600 dark:text-gray-400 text-sm font-semibold">▶ Video Rekaman</h2>
             <a v-if="videoExists"
                :href="downloadUrl"
                class="flex items-center gap-1.5 text-xs bg-green-700 hover:bg-green-600
@@ -113,22 +113,22 @@ const downloadUrl = route('admin.recordings.download', props.recording.id)
               Browser Anda tidak mendukung HTML5 video.
             </video>
             <!-- Playback speed -->
-            <div class="px-4 py-2 bg-gray-950 flex items-center gap-2">
-              <span class="text-gray-600 text-xs">Kecepatan:</span>
+            <div class="px-4 py-2 bg-gray-50 dark:bg-gray-950 flex items-center gap-2">
+              <span class="text-gray-500 dark:text-gray-600 text-xs">Kecepatan:</span>
               <button v-for="sp in [0.5, 1, 1.5, 2]" :key="sp"
                       @click="$el.querySelector('video').playbackRate = sp"
-                      class="text-xs px-2 py-0.5 bg-gray-800 hover:bg-gray-700
-                             text-gray-400 hover:text-white rounded transition-colors">
+                      class="text-xs px-2 py-0.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
+                             text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded transition-colors">
                 {{ sp }}×
               </button>
             </div>
           </div>
 
           <!-- Video tidak ada -->
-          <div v-else class="flex flex-col items-center justify-center py-16 text-gray-600">
+          <div v-else class="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-gray-600">
             <p class="text-4xl mb-3">📹</p>
             <p class="font-medium">File video tidak ditemukan</p>
-            <p class="text-xs mt-1 text-gray-700">
+            <p class="text-xs mt-1 text-gray-400 dark:text-gray-700">
               File mungkin sudah dihapus atau gagal diupload
             </p>
           </div>
@@ -139,15 +139,15 @@ const downloadUrl = route('admin.recordings.download', props.recording.id)
       <div class="space-y-4">
 
         <!-- Info rekaman -->
-        <div class="bg-gray-900 rounded-xl border border-gray-800 p-5">
-          <h2 class="text-gray-400 text-sm font-semibold mb-4">Informasi Rekaman</h2>
+        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+          <h2 class="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-4">Informasi Rekaman</h2>
           <dl class="space-y-3 text-sm">
             <div>
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Nomor Resi</dt>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Nomor Resi</dt>
               <dd class="text-blue-300 font-mono font-bold mt-0.5">{{ recording.order_number }}</dd>
             </div>
             <div>
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Status Upload</dt>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Status Upload</dt>
               <dd class="mt-0.5">
                 <span :class="['text-xs px-2 py-0.5 rounded-full border',
                                statusBadge[recording.upload_status] ?? statusBadge.pending]">
@@ -156,31 +156,31 @@ const downloadUrl = route('admin.recordings.download', props.recording.id)
               </dd>
             </div>
             <div>
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Operator</dt>
-              <dd class="text-gray-300 mt-0.5">{{ recording.user?.name ?? '—' }}</dd>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Operator</dt>
+              <dd class="text-gray-800 dark:text-gray-300 mt-0.5">{{ recording.user?.name ?? '—' }}</dd>
             </div>
             <div>
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Stasiun</dt>
-              <dd class="text-gray-400 mt-0.5">{{ recording.station ?? '—' }}</dd>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Stasiun</dt>
+              <dd class="text-gray-600 dark:text-gray-400 mt-0.5">{{ recording.station ?? '—' }}</dd>
             </div>
             <div>
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Waktu Rekam</dt>
-              <dd class="text-gray-400 mt-0.5 text-xs leading-relaxed">{{ fmtDate(recording.recorded_at) }}</dd>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Waktu Rekam</dt>
+              <dd class="text-gray-600 dark:text-gray-400 mt-0.5 text-xs leading-relaxed">{{ fmtDate(recording.recorded_at) }}</dd>
             </div>
             <div>
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Durasi</dt>
-              <dd class="text-gray-300 mt-0.5">{{ fmtDuration(actualDuration) }}</dd>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Durasi</dt>
+              <dd class="text-gray-800 dark:text-gray-300 mt-0.5">{{ fmtDuration(actualDuration) }}</dd>
             </div>
             <div v-if="fileSize">
-              <dt class="text-gray-600 text-xs uppercase tracking-wider">Ukuran File</dt>
-              <dd class="text-gray-400 mt-0.5">{{ fmtSize(fileSize) }}</dd>
+              <dt class="text-gray-500 dark:text-gray-600 text-xs uppercase tracking-wider">Ukuran File</dt>
+              <dd class="text-gray-600 dark:text-gray-400 mt-0.5">{{ fmtSize(fileSize) }}</dd>
             </div>
           </dl>
         </div>
 
         <!-- Aksi -->
-        <div class="bg-gray-900 rounded-xl border border-gray-800 p-5">
-          <h2 class="text-gray-400 text-sm font-semibold mb-4">Aksi</h2>
+        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+          <h2 class="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-4">Aksi</h2>
           <div class="space-y-2">
             <a v-if="videoExists" :href="downloadUrl"
                class="flex items-center justify-center gap-2 w-full py-2.5 bg-green-700
@@ -189,8 +189,8 @@ const downloadUrl = route('admin.recordings.download', props.recording.id)
             </a>
             <button
               @click="doDelete"
-              class="flex items-center justify-center gap-2 w-full py-2.5 border border-red-800
-                     hover:bg-red-900/30 text-red-400 text-sm rounded-lg transition-colors">
+              class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-white dark:bg-transparent border border-red-200 dark:border-transparent
+                     hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-lg transition-colors">
               🗑️ Hapus Rekaman
             </button>
           </div>
