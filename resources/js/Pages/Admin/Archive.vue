@@ -43,17 +43,18 @@ function clearFilter() {
 }
 
 function confirmDelete(rec) {
+    const isDark = document.documentElement.classList.contains('dark');
     Swal.fire({
         title: 'Hapus Rekaman?',
         html: `Hapus rekaman resi <strong class="text-red-500">${rec.order_number}</strong>?<br>Tindakan ini tidak bisa dibatalkan.`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#374151',
+        cancelButtonColor: isDark ? '#374151' : '#6b7280',
         confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal',
-        background: '#111827',
-        color: '#fff',
+        background: isDark ? '#111827' : '#ffffff',
+        color: isDark ? '#ffffff' : '#111827',
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route('admin.recordings.destroy', rec.id), {

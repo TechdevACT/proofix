@@ -381,7 +381,7 @@ function addToHistory(order) {
       leave-from-class="opacity-100 scale-100"
       leave-to-class="opacity-0 scale-95"
     >
-      <div v-if="duplicateAlert" class="absolute top-20 right-6 sm:right-10 z-[200] w-full max-w-sm overflow-hidden rounded-2xl bg-gray-900/90 backdrop-blur-xl border border-red-500/50 shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)]">
+      <div v-if="duplicateAlert" class="absolute top-20 right-6 sm:right-10 z-[200] w-full max-w-sm overflow-hidden rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-red-500/50 shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)]">
         <!-- Accent Line -->
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-orange-400"></div>
         <div class="p-4 flex items-start gap-4 relative">
@@ -433,7 +433,7 @@ function addToHistory(order) {
       leave-from-class="opacity-100 scale-100"
       leave-to-class="opacity-0 scale-95"
     >
-      <div v-if="strictAlert" class="absolute top-[280px] right-6 sm:right-10 z-[200] w-full max-w-sm overflow-hidden rounded-2xl bg-gray-900/90 backdrop-blur-xl border border-orange-500/50 shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)]">
+      <div v-if="strictAlert" class="absolute top-[280px] right-6 sm:right-10 z-[200] w-full max-w-sm overflow-hidden rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-orange-500/50 shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)]">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-600 to-yellow-400"></div>
         <div class="p-4 flex items-start gap-4 relative">
           <div class="absolute -left-4 -top-4 w-16 h-16 bg-orange-500/20 rounded-full blur-xl"></div>
@@ -461,18 +461,18 @@ function addToHistory(order) {
     </transition>
     
     <!-- Modal Container -->
-    <div class="bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 flex flex-col select-none overflow-hidden w-full max-w-5xl"
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col select-none overflow-hidden w-full max-w-5xl"
          @click.stop="focusInput">
       
       <!-- Header -->
-      <header class="h-14 bg-gray-950 border-b border-gray-800 flex items-center justify-between px-5">
+      <header class="h-14 bg-gray-50 dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-5">
         <div class="flex items-center gap-3">
           <span class="text-blue-400 font-bold text-lg tracking-wider">📦 PROOFIX PACKING</span>
           <span v-if="recording" class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
         </div>
 
         <!-- Status Hardware -->
-        <div class="flex items-center gap-6 bg-gray-900 px-4 py-1.5 rounded-full border border-gray-700 shadow-inner">
+        <div class="flex items-center gap-6 bg-white dark:bg-gray-900 px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 shadow-inner">
           <div class="flex items-center gap-2 transition-colors duration-300" :class="cameraOk ? 'text-green-400' : 'text-red-400'">
              <span class="relative flex h-2.5 w-2.5">
                 <span v-if="cameraOk" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -480,7 +480,7 @@ function addToHistory(order) {
              </span>
              <span class="text-xs font-bold tracking-wider uppercase">Kamera</span>
           </div>
-          <div class="w-px h-4 bg-gray-700"></div>
+          <div class="w-px h-4 bg-gray-300 dark:bg-gray-700"></div>
           <div class="flex items-center gap-2 transition-colors duration-300 cursor-help" :class="scannerReady ? 'text-green-400' : 'text-yellow-500'" title="Status kesiapan aplikasi menerima input ketikan dari scanner">
              <span class="relative flex h-2.5 w-2.5">
                 <span v-if="scannerReady" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -490,7 +490,7 @@ function addToHistory(order) {
           </div>
         </div>
 
-        <button @click="emit('close')" class="text-gray-400 hover:text-red-400 transition-colors p-2 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center gap-2">
+        <button @click="emit('close')" class="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg flex items-center gap-2">
           <span class="text-sm font-semibold">Tutup</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -502,7 +502,7 @@ function addToHistory(order) {
       <div class="flex flex-col lg:flex-row">
         
         <!-- Canvas + Video area (Left/Top) -->
-        <div class="w-full lg:w-2/3 relative bg-black border-b lg:border-b-0 lg:border-r border-gray-800 flex items-center justify-center" style="min-height: 300px;">
+        <div class="w-full lg:w-2/3 relative bg-black border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-800 flex items-center justify-center" style="min-height: 300px;">
            <!-- Error kamera -->
           <div v-if="cameraErr" class="absolute inset-0 flex flex-col items-center justify-center p-6 bg-red-900/40 text-center z-10">
             <p class="text-4xl mb-3">📷</p>
@@ -528,29 +528,35 @@ function addToHistory(order) {
         </div>
 
         <!-- Info Area (Right/Bottom) -->
-        <div class="w-full lg:w-1/3 bg-gray-900 flex flex-col">
+        <div class="w-full lg:w-1/3 bg-white dark:bg-gray-900 flex flex-col">
           <div class="p-6 flex-1 flex flex-col">
             
-            <div class="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50 mb-5 text-center">
+            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700/50 mb-5 text-center">
               <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Status Perekaman</p>
               <p v-if="recording" class="text-red-400 font-mono font-bold text-3xl mb-1 animate-pulse">RECORDING</p>
-              <p v-else class="text-gray-500 font-medium text-3xl mb-1">Standby</p>
+              <p v-else class="text-gray-400 dark:text-gray-500 font-medium text-3xl mb-1">Standby</p>
               
-              <div class="mt-5 border-t border-gray-700/50 pt-4">
+              <div class="mt-5 border-t border-gray-200 dark:border-gray-700/50 pt-4">
                 <p class="text-gray-500 text-xs uppercase tracking-wider mb-2">Nomor Resi Aktif</p>
-                <p class="text-white font-mono text-2xl truncate px-2" :class="recording ? 'font-bold text-blue-300' : ''">
+                <p class="text-gray-900 dark:text-white font-mono text-2xl truncate px-2" :class="recording ? 'font-bold text-blue-300' : ''">
                   {{ recording ? currentOrder : (scannedInput || '—') }}
                 </p>
               </div>
+
+              <!-- Panic Button -->
+              <button v-if="recording" @click="stopRecording" 
+                      class="mt-5 w-full bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 border border-red-200 dark:border-red-800 font-semibold py-2.5 px-4 rounded-lg flex justify-center items-center gap-2 transition-colors">
+                <span class="text-base leading-none">⏹️</span> Hentikan Paksa
+              </button>
             </div>
 
             <!-- Stats -->
             <div class="grid grid-cols-2 gap-4 mb-5">
-              <div class="bg-gray-800/50 rounded-xl p-4 text-center border border-gray-700/50">
+              <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-700/50">
                 <p class="text-blue-400 font-bold text-2xl">{{ todayCount }}</p>
                 <p class="text-gray-500 text-[10px] uppercase mt-1">Pack Hari Ini</p>
               </div>
-              <div class="bg-gray-800/50 rounded-xl p-4 text-center border border-gray-700/50 flex flex-col items-center justify-center">
+              <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-700/50 flex flex-col items-center justify-center">
                 <p v-if="uploadStatus === 'uploading'" class="text-yellow-400 text-2xl animate-pulse">⏳</p>
                 <p v-else-if="uploadStatus === 'ok'" class="text-green-400 text-2xl">✓</p>
                 <p v-else-if="uploadStatus === 'error'" class="text-red-400 text-2xl">✗</p>
@@ -560,18 +566,18 @@ function addToHistory(order) {
             </div>
 
             <!-- Panduan -->
-            <div class="mt-auto text-sm text-gray-400 space-y-3 bg-gray-950 p-5 rounded-xl border border-gray-800 shadow-inner">
+            <div class="mt-auto text-sm text-gray-600 dark:text-gray-400 space-y-3 bg-gray-50 dark:bg-gray-950 p-5 rounded-xl border border-gray-200 dark:border-gray-800 shadow-inner">
               <p class="flex items-center gap-3">
                 <span class="text-xl">📦</span> 
-                <span><strong class="text-gray-300">Scan resi</strong> untuk mulai/stop merekam paket ini.</span>
+                <span><strong class="text-gray-900 dark:text-gray-300">Scan resi</strong> untuk mulai/stop merekam paket ini.</span>
               </p>
               <p class="flex items-center gap-3">
                 <span class="text-xl">🔒</span> 
-                <span><strong class="text-gray-300">Strict Mode Aktif:</strong> Segala scan resi asing akan ditolak hingga resi saat ini selesai.</span>
+                <span><strong class="text-gray-900 dark:text-gray-300">Strict Mode Aktif:</strong> Segala scan resi asing akan ditolak hingga resi saat ini selesai.</span>
               </p>
               <p class="flex items-center gap-3">
                 <span class="text-xl">🛑</span> 
-                <span><strong class="text-gray-300">Scan kata STOP</strong> untuk matikan kamera.</span>
+                <span><strong class="text-gray-900 dark:text-gray-300">Scan kata STOP</strong> untuk matikan kamera.</span>
               </p>
             </div>
 

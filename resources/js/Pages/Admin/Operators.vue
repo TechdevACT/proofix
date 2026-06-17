@@ -59,17 +59,18 @@ function submitForm() {
 }
 
 function confirmDelete(op) {
+    const isDark = document.documentElement.classList.contains('dark');
     Swal.fire({
         title: 'Hapus Operator?',
         html: `Hapus operator <strong class="text-red-500">${op.name}</strong>?<br><span class="text-sm">Semua data rekamannya tetap akan tersimpan.</span>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#374151',
+        cancelButtonColor: isDark ? '#374151' : '#6b7280',
         confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal',
-        background: '#111827',
-        color: '#fff',
+        background: isDark ? '#111827' : '#ffffff',
+        color: isDark ? '#ffffff' : '#111827',
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route('admin.operators.destroy', op.id), {
@@ -139,7 +140,7 @@ function onBackdropClick(e) {
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div :class="['w-10 h-10 rounded-full flex items-center justify-center',
-                          'text-gray-900 dark:text-white font-bold text-sm shrink-0', avatarColor(op.id)]">
+                          'text-white font-bold text-sm shrink-0', avatarColor(op.id)]">
               {{ initials(op.name) }}
             </div>
             <div>
