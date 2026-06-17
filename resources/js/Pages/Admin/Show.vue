@@ -46,17 +46,18 @@ function fmtSize(bytes) {
 }
 
 function doDelete() {
+    const isDark = document.documentElement.classList.contains('dark');
     Swal.fire({
         title: 'Hapus Rekaman?',
         html: `Rekaman resi <strong class="text-blue-400 font-mono">${props.recording.order_number}</strong><br><br><span class="text-sm text-red-400">File video akan ikut terhapus dan tidak bisa dipulihkan.</span>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#b91c1c',
-        cancelButtonColor: '#1f2937',
+        cancelButtonColor: isDark ? '#1f2937' : '#6b7280',
         confirmButtonText: 'Ya, Hapus',
         cancelButtonText: 'Batal',
-        background: '#111827',
-        color: '#fff',
+        background: isDark ? '#111827' : '#ffffff',
+        color: isDark ? '#ffffff' : '#111827',
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route('admin.recordings.destroy', props.recording.id))
@@ -112,16 +113,6 @@ const downloadUrl = route('admin.recordings.download', props.recording.id)
             >
               Browser Anda tidak mendukung HTML5 video.
             </video>
-            <!-- Playback speed -->
-            <div class="px-4 py-2 bg-gray-50 dark:bg-gray-950 flex items-center gap-2">
-              <span class="text-gray-500 dark:text-gray-600 text-xs">Kecepatan:</span>
-              <button v-for="sp in [0.5, 1, 1.5, 2]" :key="sp"
-                      @click="$el.querySelector('video').playbackRate = sp"
-                      class="text-xs px-2 py-0.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
-                             text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded transition-colors">
-                {{ sp }}×
-              </button>
-            </div>
           </div>
 
           <!-- Video tidak ada -->

@@ -38,12 +38,21 @@ const diskColor = computed(() => {
     <div class="max-w-3xl space-y-5">
 
       <!-- Disk Space ──────────────────────────────────────────────────────── -->
-      <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 flex items-center justify-between">
-        <div>
-          <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Kapasitas Sistem Lokal Laragon</p>
-          <p class="text-gray-500 dark:text-gray-600 text-xs mt-0.5">Video rekaman kini otomatis disimpan di NAS</p>
+      <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Kapasitas Penyimpanan Local Storage</p>
+            <p class="text-gray-500 dark:text-gray-600 text-xs mt-0.5">Tersisa {{ disk.free_gb }} GB dari total {{ disk.total_gb }} GB</p>
+          </div>
+          <span class="text-gray-900 dark:text-white font-bold text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg">{{ disk.percent }}% Terpakai</span>
         </div>
-        <span class="text-gray-900 dark:text-white font-bold text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg">{{ videoSize }}</span>
+        <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
+          <div :class="['h-full rounded-full transition-all duration-500', diskColor]" :style="{ width: disk.percent + '%' }"></div>
+        </div>
+        <p class="text-gray-500 dark:text-gray-600 text-[11px] mt-3 flex justify-between">
+          <span>Otomatis dikelola oleh sistem (Retensi {{ form.retention_days }} hari)</span>
+          <span>Ukuran folder video saat ini: <strong class="text-gray-700 dark:text-gray-400">{{ videoSize }}</strong></span>
+        </p>
       </div>
 
       <!-- Konfigurasi Rekaman ───────────────────────────────────────────── -->

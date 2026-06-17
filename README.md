@@ -1,66 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Proofix - Panduan Deployment ke Synology NAS (Local Network)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dokumen ini berisi panduan langkah-demi-langkah dari awal sampai akhir untuk mendeploy project **Proofix (Laravel + Vue + MySQL)** ke Synology NAS (DS1522+) menggunakan Web Station secara native (tanpa Docker), dan hanya diakses melalui Local Network (LAN).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠️ Tahap 1: Persiapan di Komputer Lokal (Laragon)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Sebelum project dipindahkan ke NAS, kita harus mem-*build* file Vue (Frontend) menjadi file statis terlebih dahulu.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Buka CMD / Terminal di dalam folder project ini (`c:\laragon\www\proofix`).
+2. Jalankan perintah untuk meng-compile Vue (Vite):
+   ```bash
+   npm run build
+   ```
+   *(Tunggu sampai proses selesai. File hasil build akan otomatis masuk ke folder `public/build`)*.
+3. Setelah build selesai, jadikan seluruh folder `proofix` ini menjadi file zip (misalnya: `proofix.zip`). **PENTING:** Anda tidak perlu menjalankan `npm run dev` atau `php artisan serve` lagi setelah ini.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📦 Tahap 2: Persiapan di Synology NAS
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Pastikan Anda sudah meng-install aplikasi (package) berikut dari **Package Center** di NAS Anda:
+- **Web Station**
+- **PHP 8.x** (Misalnya PHP 8.2 - Sesuaikan dengan versi yang dipakai di lokal)
+- **MariaDB 10** (Database Server)
+- **phpMyAdmin** (Database Manager)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 📂 Tahap 3: Memindahkan File ke NAS
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. Buka aplikasi **File Station** di NAS.
+2. Buka folder `web`.
+3. Upload file `proofix.zip` dari komputer Anda ke dalam folder `web` tersebut.
+4. Klik kanan pada file zip, lalu pilih **Extract Here**.
+5. Sekarang project Anda berada di struktur path: `/volume1/web/proofix`.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 🗄️ Tahap 4: Mengatur Database MySQL (MariaDB)
 
-## Contributing
+1. Di komputer lokal Anda (Laragon), *Export* database Proofix menjadi file `.sql`.
+2. Buka aplikasi **phpMyAdmin** di NAS (Login menggunakan username `root` dan password MariaDB Anda).
+3. Buat database baru dengan nama yang sama (misal: `proofix_db`).
+4. **Import** file `.sql` Anda ke database baru tersebut.
+5. Kembali ke **File Station** NAS, buka file `web/proofix/.env` dengan Text Editor bawaan.
+6. Sesuaikan konfigurasi database dengan milik NAS:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3307        # PENTING: MariaDB 10 Synology menggunakan port 3307
+   DB_DATABASE=proofix_db
+   DB_USERNAME=root
+   DB_PASSWORD=password_mariadb_nas_anda
+   ```
+   *Simpan file .env tersebut.*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🔑 Tahap 5: Mengatur Izin Akses Folder (Permission)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Laravel membutuhkan izin `write` (menulis) pada folder `storage` dan `bootstrap/cache`.
+1. Di **File Station**, klik kanan pada folder `web/proofix/storage`, pilih **Properties**.
+2. Masuk ke tab **Permission** -> Klik **Create/Add**.
+3. Pilih User/Group: `http` (Ini adalah user khusus Web Station).
+4. Centang kotak **Read** dan **Write** agar berwarna biru penuh.
+5. Klik **Done/Save**.
+6. Ulangi langkah 1-5 untuk folder `web/proofix/bootstrap/cache`.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🌐 Tahap 6: Mengatur Web Station
 
-## License
+1. Buka aplikasi **Web Station**.
+2. Masuk ke menu **Web Service**, lalu klik **Create** (Buat).
+3. Pilih **Virtual Host** (atau *Native Portal*).
+4. Lakukan pengaturan berikut:
+   - **Port-based:** Centang, lalu masukkan port khusus, misal `8080` (HTTP).
+   - **Document Root:** Klik Browse, lalu pilih folder `web/proofix/public`. 
+     *(PENTING: Harus diarahkan ke folder `/public`, bukan `/proofix` saja!)*
+   - **HTTP Backend / PHP Profile:** Pilih **PHP 8.x** yang sudah diinstall tadi.
+5. Klik **Create** / **Save**.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🎉 Tahap 7: Cara Mengakses Website
+
+Website Proofix Anda sudah menyala! Untuk mengaksesnya, pastikan komputer/HP Anda terhubung ke Wi-Fi atau LAN yang sama dengan NAS, lalu buka browser dan ketikkan alamat IP NAS beserta Port-nya.
+
+Contoh: 
+`http://192.168.1.50:8080`
+
+---
+
+## ⚙️ Tahap 8: Cara Menjalankan Perintah PHP Artisan (Opsional)
+
+Karena project ini sudah live dengan Web Station, Anda tidak butuh `php artisan serve`. Namun, jika Anda perlu menjalankan perintah seperti `php artisan migrate`, Anda harus melakukannya via SSH.
+
+1. Di NAS, buka **Control Panel** -> **Terminal & SNMP** -> Centang **Enable SSH service**.
+2. Di komputer lokal Anda, buka CMD / Terminal, lalu ketik:
+   ```bash
+   ssh username_nas_anda@IP_NAS_ANDA
+   ```
+3. Masukkan password NAS Anda.
+4. Masuk ke folder project:
+   ```bash
+   cd /volume1/web/proofix
+   ```
+5. Jalankan perintah artisan menggunakan versi PHP yang terinstall (misal PHP 8.2):
+   ```bash
+   sudo /usr/local/bin/php82 artisan migrate
+   ```
